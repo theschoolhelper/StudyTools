@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>StudyTools</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6fb;
+    color: #1f2937;
+    transition: 0.3s;
+}
+
+body.dark {
+    background: #111827;
+    color: white;
+}
+
+/* HEADER */
+
+header {
+    background: #111827;
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 36px;
+    margin: 0;
+}
+
+header p {
+    color: #d1d5db;
+}
+
+/* NAVIGATION */
+
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 15px;
+    background: white;
+}
+
+body.dark nav {
+    background: #1f2937;
+}
+
+nav button {
+    width: auto;
+    margin: 0;
+    padding: 10px 16px;
+}
+
+/* CONTAINER */
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 25px;
+}
+
+.section {
+    margin-bottom: 40px;
+}
+
+.section h2 {
+    text-align: center;
+    font-size: 28px;
+}
+
+/* CARTES */
+
+.tools {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 18px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+body.dark .card {
+    background: #1f2937;
+}
+
+.card h3 {
+    margin-top: 0;
+}
+
+/* INPUTS */
+
+input,
+select,
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 9px;
+    border: 1px solid #d1d5db;
+    font-size: 16px;
+}
+
+button {
+    background: #111827;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+/* BOUTON SUPPRIMER */
+
+.delete {
+    background: #dc2626;
+}
+
+/* RESULTATS */
+
+.result {
+    margin-top: 15px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* NOTES */
+
+.note-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+.note-row button {
+    width: auto;
+    padding: 10px;
+}
+
+/* TIMER */
+
+.timer {
+    font-size: 50px;
+    text-align: center;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+/* FOOTER */
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #6b7280;
+}
+
+/* MOBILE */
+
+@media(max-width:600px) {
+
+    .container {
+        padding: 15px;
+    }
+
+    .note-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .note-row button {
+        grid-column: span 2;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- HEADER -->
+
+<header>
+
+    <h1>📚 StudyTools</h1>
+
+    <p>Tes outils pour mieux travailler</p>
+
+</header>
+
+
+<!-- NAVIGATION -->
+
+<nav>
+
+    <button onclick="allerA('moyenne')">
+        🧮 Moyenne
+    </button>
+
+    <button onclick="allerA('brevet')">
+        🎓 Brevet
+    </button>
+
+    <button onclick="allerA('pomodoro')">
+        ⏱️ Minuteur
+    </button>
+
+    <button onclick="modeSombre()">
+        🌙 Mode sombre
+    </button>
+
+</nav>
+
+
+<div class="container">
+
+
+<!-- ============================= -->
+<!-- CALCULATEUR DE MOYENNE -->
+<!-- ============================= -->
+
+<section id="moyenne" class="section">
+
+    <h2>🧮 Calculateur de moyenne</h2>
+
+    <div class="card">
+
+        <div id="notes">
+
+            <div class="note-row">
+
+                <input
+                    type="number"
+                    min="0"
+                    max="20"
+                    placeholder="Note /20"
+                >
+
+                <input
+                    type="number"
+                    min="0"
+                    placeholder="Coefficient"
+                    value="1"
+                >
+
+                <button
+                    class="delete"
+                    onclick="supprimerNote(this)"
+                >
+                    ✕
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <button onclick="ajouterNote()">
+            ➕ Ajouter une note
+        </button>
+
+
+        <button onclick="calculerMoyenne()">
+            🧮 Calculer ma moyenne
+        </button>
+
+
+        <button onclick="sauvegarder()">
+            💾 Sauvegarder mes notes
+        </button>
+
+
+        <div
+            id="moyenneResult"
+            class="result">
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ============================= -->
+<!-- CALCULATEUR BREVET -->
+<!-- ============================= -->
+
+<section id="brevet" class="section">
+
+    <h2>🎓 Calculateur de points</h2>
+
+    <div class="card">
+
+        <h3>Calcul sur 800 points</h3>
+
+        <p>
+            Entre ton nombre de points :
+        </p>
+
+
+        <input
+            id="brevetPoints"
+            type="number"
+            min="0"
+            max="800"
+            placeholder="Exemple : 640"
+        >
+
+
+        <button onclick="calculerBrevet()">
+            🎓 Calculer
+        </button>
+
+
+        <div
+            id="brevetResult"
+            class="result">
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ============================= -->
+<!-- MINUTEUR -->
+<!-- ============================= -->
+
+<section id="pomodoro" class="section">
+
+    <h2>⏱️ Minuteur de travail</h2>
+
+    <div class="card">
+
+        <p>
+            Choisis la durée de ta session de travail :
+        </p>
+
+
+        <input
+            id="dureeTravail"
+            type="number"
+            min="1"
+            max="300"
+            placeholder="Durée en minutes"
+        >
+
+
+        <div
+            id="timer"
+            class="timer">
+            00:00
+        </div>
+
+
+        <button onclick="demarrerMinuteur()">
+            ▶️ Démarrer
+        </button>
+
+
+        <button onclick="pauseMinuteur()">
+            ⏸️ Pause
+        </button>
+
+
+        <button onclick="resetMinuteur()">
+            🔄 Réinitialiser
+        </button>
+
+
+    </div>
+
+</section>
+
+
+</div>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    StudyTools — Projet créé avec HTML, CSS et JavaScript 💻
+
+</footer>
+
+
+
+<script>
+
+
+/* ============================= */
+/* NAVIGATION */
+/* ============================= */
+
+function allerA(id) {
+
+    document
+        .getElementById(id)
+        .scrollIntoView({
+            behavior: "smooth"
+        });
+
+}
+
+
+/* ============================= */
+/* MODE SOMBRE */
+/* ============================= */
+
+function modeSombre() {
+
+    document
+        .body
+        .classList
+        .toggle("dark");
+
+}
+
+
+/* ============================= */
+/* AJOUTER UNE NOTE */
+/* ============================= */
+
+function ajouterNote() {
+
+    const notes =
+        document.getElementById("notes");
+
+
+    const ligne =
+        document.createElement("div");
+
+
+    ligne.className = "note-row";
+
+
+    ligne.innerHTML = `
+
+        <input
+            type="number"
+            min="0"
+            max="20"
+            placeholder="Note /20"
+        >
+
+        <input
+            type="number"
+            min="0"
+            placeholder="Coefficient"
+            value="1"
+        >
+
+        <button
+            class="delete"
+            onclick="supprimerNote(this)"
+        >
+            ✕
+        </button>
+
+    `;
+
+
+    notes.appendChild(ligne);
+
+}
+
+
+/* ============================= */
+/* SUPPRIMER UNE NOTE */
+/* ============================= */
+
+function supprimerNote(button) {
+
+    const lignes =
+        document.querySelectorAll(".note-row");
+
+
+    if (lignes.length > 1) {
+
+        button
+            .parentElement
+            .remove();
+
+    }
+
+}
+
+
+/* ============================= */
+/* CALCUL MOYENNE */
+/* ============================= */
+
+function calculerMoyenne() {
+
+    const lignes =
+        document.querySelectorAll(".note-row");
+
+
+    let total = 0;
+
+    let coefficients = 0;
+
+
+    lignes.forEach(ligne => {
+
+        const note =
+            Number(
+                ligne.children[0].value
+            );
+
+
+        const coef =
+            Number(
+                ligne.children[1].value
+            );
+
+
+        if (
+            !isNaN(note) &&
+            !isNaN(coef) &&
+            coef > 0
+        ) {
+
+            total += note * coef;
+
+            coefficients += coef;
+
+        }
+
+    });
+
+
+    if (coefficients === 0) {
+
+        document
+            .getElementById("moyenneResult")
+            .textContent =
+            "Entre au moins une note.";
+
+        return;
+
+    }
+
+
+    const moyenne =
+        total / coefficients;
+
+
+    document
+        .getElementById("moyenneResult")
+        .textContent =
+        "Ta moyenne : "
+        + moyenne.toFixed(2)
+        + "/20";
+
+}
+
+
+/* ============================= */
+/* SAUVEGARDER LES NOTES */
+/* ============================= */
+
+function sauvegarder() {
+
+    const lignes =
+        document.querySelectorAll(".note-row");
+
+
+    const donnees = [];
+
+
+    lignes.forEach(ligne => {
+
+        donnees.push({
+
+            note:
+                ligne.children[0].value,
+
+            coef:
+                ligne.children[1].value
+
+        });
+
+    });
+
+
+    localStorage.setItem(
+        "studytools_notes",
+        JSON.stringify(donnees)
+    );
+
+
+    document
+        .getElementById("moyenneResult")
+        .textContent =
+        "✅ Notes sauvegardées !";
+
+}
+
+
+/* ============================= */
+/* CHARGER LES NOTES */
+/* ============================= */
+
+function chargerNotes() {
+
+    const donnees =
+        JSON.parse(
+            localStorage.getItem(
+                "studytools_notes"
+            )
+        );
+
+
+    if (!donnees) return;
+
+
+    const notes =
+        document.getElementById("notes");
+
+
+    notes.innerHTML = "";
+
+
+    donnees.forEach(item => {
+
+        const ligne =
+            document.createElement("div");
+
+
+        ligne.className =
+            "note-row";
+
+
+        ligne.innerHTML = `
+
+            <input
+                type="number"
+                min="0"
+                max="20"
+                placeholder="Note /20"
+                value="${item.note}"
+            >
+
+            <input
+                type="number"
+                min="0"
+                placeholder="Coefficient"
+                value="${item.coef}"
+            >
+
+            <button
+                class="delete"
+                onclick="supprimerNote(this)"
+            >
+                ✕
+            </button>
+
+        `;
+
+
+        notes.appendChild(ligne);
+
+    });
+
+}
+
+
+/* ============================= */
+/* CALCUL BREVET */
+/* ============================= */
+
+function calculerBrevet() {
+
+    const points =
+        Number(
+            document.getElementById(
+                "brevetPoints"
+            ).value
+        );
+
+
+    if (
+        points < 0 ||
+        points > 800 ||
+        isNaN(points)
+    ) {
+
+        document
+            .getElementById("brevetResult")
+            .textContent =
+            "Entre un nombre entre 0 et 800.";
+
+        return;
+
+    }
+
+
+    const pourcentage =
+        (points / 800) * 100;
+
+
+    document
+        .getElementById("brevetResult")
+        .textContent =
+        points
+        + "/800 = "
+        + pourcentage.toFixed(2)
+        + "%";
+
+}
+
+
+/* ============================= */
+/* MINUTEUR PERSONNALISABLE */
+/* ============================= */
+
+let secondes = 0;
+
+let interval = null;
+
+
+/* AFFICHER LE TEMPS */
+
+function afficherTimer() {
+
+    const minutes =
+        Math.floor(secondes / 60);
+
+
+    const secs =
+        secondes % 60;
+
+
+    document
+        .getElementById("timer")
+        .textContent =
+
+        String(minutes)
+            .padStart(2, "0")
+
+        + ":" +
+
+        String(secs)
+            .padStart(2, "0");
+
+}
+
+
+/* DÉMARRER */
+
+function demarrerMinuteur() {
+
+    /* Évite de lancer plusieurs minuteurs */
+
+    if (interval !== null) {
+
+        return;
+
+    }
+
+
+    /*
+       Si le minuteur est à zéro,
+       on récupère la durée choisie
+    */
+
+    if (secondes === 0) {
+
+        const minutes =
+
+            Number(
+                document.getElementById(
+                    "dureeTravail"
+                ).value
+            );
+
+
+        if (
+            !minutes ||
+            minutes < 1
+        ) {
+
+            alert(
+                "Choisis d'abord une durée !"
+            );
+
+            return;
+
+        }
+
+
+        secondes =
+            minutes * 60;
+
+    }
+
+
+    interval =
+        setInterval(() => {
+
+
+            if (secondes > 0) {
+
+                secondes--;
+
+                afficherTimer();
+
+            }
+
+            else {
+
+                clearInterval(interval);
+
+                interval = null;
+
+                alert(
+                    "🎉 Temps terminé !"
+                );
+
+            }
+
+
+        }, 1000);
+
+}
+
+
+/* PAUSE */
+
+function pauseMinuteur() {
+
+    clearInterval(interval);
+
+    interval = null;
+
+}
+
+
+/* RÉINITIALISER */
+
+function resetMinuteur() {
+
+    clearInterval(interval);
+
+    interval = null;
+
+    secondes = 0;
+
+
+    document
+        .getElementById("timer")
+        .textContent =
+        "00:00";
+
+}
+
+
+/* ============================= */
+/* LANCEMENT DU SITE */
+/* ============================= */
+
+chargerNotes();
+
+afficherTimer();
+
+
+</script>
+
+</body>
+
+</html>
