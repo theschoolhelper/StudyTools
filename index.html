@@ -1,40 +1,594 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>StudyTools</title>
+<meta name="theme-color" content="#111827">
+<title>StudyTools — Tes outils pour réussir</title>
 
 <style>
+:root{
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --text:#172033;
+    --muted:#667085;
+    --primary:#4f46e5;
+    --primary2:#7c3aed;
+    --border:#e5e7eb;
+    --danger:#dc2626;
+    --success:#059669;
+    --shadow:0 10px 30px rgba(15,23,42,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+    margin:0;
+    font-family:Inter,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    transition:.25s;
+}
+body.dark{
+    --bg:#0b1120;
+    --card:#151e31;
+    --text:#f8fafc;
+    --muted:#aab4c5;
+    --border:#2b3850;
+    --shadow:0 12px 35px rgba(0,0,0,.25);
+}
+header{
+    background:linear-gradient(135deg,#111827,#4f46e5,#7c3aed);
+    color:white;
+    padding:60px 20px 55px;
+    text-align:center;
+}
+header h1{font-size:clamp(38px,7vw,64px);margin:0 0 10px}
+header p{font-size:18px;margin:0;color:#e5e7eb}
+.badge{
+    display:inline-block;
+    margin-bottom:16px;
+    padding:7px 13px;
+    border:1px solid rgba(255,255,255,.3);
+    border-radius:999px;
+    background:rgba(255,255,255,.12);
+    font-size:14px;
+}
+nav{
+    position:sticky;
+    top:0;
+    z-index:10;
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    flex-wrap:wrap;
+    padding:12px;
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+}
+body.dark nav{background:rgba(15,23,42,.92)}
+nav button{
+    width:auto;
+    margin:0;
+    padding:9px 13px;
+    background:transparent;
+    color:var(--text);
+    border:1px solid var(--border);
+}
+nav button:hover{background:var(--card)}
+.container{max-width:1100px;margin:auto;padding:28px 18px 60px}
+.section{margin-bottom:55px;scroll-margin-top:90px}
+.section h2{text-align:center;font-size:30px;margin-bottom:22px}
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:20px;
+}
+.card{
+    background:var(--card);
+    padding:24px;
+    border-radius:20px;
+    box-shadow:var(--shadow);
+    border:1px solid var(--border);
+}
+.card h3{margin-top:0}
+.hero-grid{
+    display:grid;
+    grid-template-columns:1.3fr .7fr;
+    gap:20px;
+}
+.hero-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:24px;
+    padding:30px;
+    box-shadow:var(--shadow);
+}
+.hero-card h2{text-align:left;margin-top:0}
+.tool-card{
+    cursor:pointer;
+    transition:.2s;
+}
+.tool-card:hover{transform:translateY(-4px)}
+.tool-icon{font-size:34px}
+input,textarea,select,button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    font-size:16px;
+    background:var(--card);
+    color:var(--text);
+}
+textarea{min-height:130px;resize:vertical}
+button{
+    background:var(--primary);
+    color:white;
+    border:none;
+    cursor:pointer;
+    font-weight:600;
+}
+button:hover{filter:brightness(.95)}
+.secondary{background:#64748b}
+.danger{background:var(--danger)}
+.success{background:var(--success)}
+.result{
+    margin-top:15px;
+    padding:13px;
+    border-radius:10px;
+    background:rgba(79,70,229,.08);
+    font-weight:700;
+    min-height:20px;
+}
+.note-row{
+    display:grid;
+    grid-template-columns:1fr 1fr auto;
+    gap:8px;
+    align-items:center;
+}
+.note-row button{width:auto;margin-top:10px}
+.timer{
+    font-size:64px;
+    text-align:center;
+    font-weight:800;
+    letter-spacing:2px;
+    margin:20px 0;
+}
+.timer-status{text-align:center;color:var(--muted)}
+.todo-row{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    padding:10px 0;
+    border-bottom:1px solid var(--border);
+}
+.todo-row input[type="checkbox"]{width:auto;margin:0}
+.todo-row span{flex:1}
+.todo-row.done span{text-decoration:line-through;color:var(--muted)}
+.flashcard{
+    min-height:170px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-size:22px;
+    font-weight:700;
+    padding:25px;
+    border:2px dashed var(--border);
+    border-radius:18px;
+    margin-top:15px;
+}
+.quiz-question{font-size:20px;font-weight:700;margin-bottom:10px}
+.quiz-option{
+    background:transparent;
+    color:var(--text);
+    border:1px solid var(--border);
+    text-align:left;
+}
+.quiz-option.correct{background:#dcfce7;color:#166534;border-color:#86efac}
+.quiz-option.wrong{background:#fee2e2;color:#991b1b;border-color:#fca5a5}
+body.dark .quiz-option.correct{background:#123c2a;color:#bbf7d0}
+body.dark .quiz-option.wrong{background:#431b20;color:#fecaca}
+.small{font-size:14px;color:var(--muted)}
+footer{text-align:center;padding:35px;color:var(--muted)}
+@media(max-width:700px){
+    .hero-grid{grid-template-columns:1fr}
+    .note-row{grid-template-columns:1fr 1fr}
+    .note-row button{grid-column:span 2}
+    nav{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap}
+    nav button{white-space:nowrap}
+}
+</style>
+</head>
 
-* {
-    box-sizing: border-box;
+<body>
+
+<header id="accueil">
+    <div class="badge">📚 Version 3</div>
+    <h1>StudyTools</h1>
+    <p>Tes outils simples pour mieux travailler, réviser et t'organiser.</p>
+</header>
+
+<nav>
+    <button onclick="allerA('accueil')">🏠 Accueil</button>
+    <button onclick="allerA('moyenne')">🧮 Moyenne</button>
+    <button onclick="allerA('points')">🎓 Points</button>
+    <button onclick="allerA('minuteur')">⏱️ Minuteur</button>
+    <button onclick="allerA('planning')">📅 Planning</button>
+    <button onclick="allerA('fiches')">📝 Fiches</button>
+    <button onclick="allerA('quiz')">🧠 Quiz</button>
+    <button onclick="modeSombre()">🌙</button>
+</nav>
+
+<main class="container">
+
+<section class="section">
+    <div class="hero-grid">
+        <div class="hero-card">
+            <h2>Travaille plus simplement 🚀</h2>
+            <p>Calcule tes notes, organise tes révisions, lance une session de travail et teste tes connaissances au même endroit.</p>
+            <button onclick="allerA('moyenne')">Commencer →</button>
+        </div>
+        <div class="hero-card">
+            <h3>💡 Astuce</h3>
+            <p>Utilise le minuteur pour travailler pendant une durée précise, puis fais une courte pause.</p>
+            <p class="small">Tes notes et ton planning sont enregistrés directement dans ton navigateur.</p>
+        </div>
+    </div>
+</section>
+
+<section id="moyenne" class="section">
+<h2>🧮 Calculateur de moyenne</h2>
+<div class="card">
+    <div id="notes">
+        <div class="note-row">
+            <input type="number" min="0" max="20" step="0.01" placeholder="Note /20">
+            <input type="number" min="0.01" placeholder="Coefficient" value="1" step="0.01">
+            <button class="danger" onclick="supprimerNote(this)">✕</button>
+        </div>
+    </div>
+    <button onclick="ajouterNote()">➕ Ajouter une note</button>
+    <button onclick="calculerMoyenne()">🧮 Calculer</button>
+    <button class="secondary" onclick="sauvegarderNotes()">💾 Sauvegarder</button>
+    <div id="moyenneResult" class="result"></div>
+</div>
+</section>
+
+<section id="points" class="section">
+<h2>🎓 Convertisseur de points</h2>
+<div class="card">
+    <p>Entre un nombre de points sur 800 pour connaître son pourcentage.</p>
+    <input id="points800" type="number" min="0" max="800" step="1" placeholder="Exemple : 640">
+    <button onclick="calculerPoints()">Calculer</button>
+    <div id="pointsResult" class="result"></div>
+    <p class="small">Ce module est un convertisseur de points. Les règles et barèmes officiels peuvent évoluer.</p>
+</div>
+</section>
+
+<section id="minuteur" class="section">
+<h2>⏱️ Minuteur de travail</h2>
+<div class="card">
+    <p>Choisis la durée de ta session.</p>
+    <input id="dureeTravail" type="number" min="1" max="300" placeholder="Durée en minutes">
+    <div id="timer" class="timer">00:00</div>
+    <div id="timerStatus" class="timer-status">Prêt à travailler</div>
+    <button onclick="demarrerMinuteur()">▶️ Démarrer</button>
+    <button class="secondary" onclick="pauseMinuteur()">⏸️ Pause</button>
+    <button class="danger" onclick="resetMinuteur()">🔄 Réinitialiser</button>
+</div>
+</section>
+
+<section id="planning" class="section">
+<h2>📅 Planning de révisions</h2>
+<div class="card">
+    <input id="todoInput" type="text" placeholder="Exemple : Réviser les fractions">
+    <button onclick="ajouterTache()">➕ Ajouter une tâche</button>
+    <div id="todoList"></div>
+    <button class="danger" onclick="effacerPlanning()">🗑️ Effacer le planning</button>
+</div>
+</section>
+
+<section id="fiches" class="section">
+<h2>📝 Fiches de révision</h2>
+<div class="grid">
+    <div class="card">
+        <h3>Créer une carte</h3>
+        <input id="ficheQuestion" type="text" placeholder="Question / notion">
+        <textarea id="ficheReponse" placeholder="Réponse / définition"></textarea>
+        <button onclick="ajouterFiche()">➕ Ajouter</button>
+        <p class="small">Tes cartes sont enregistrées dans ton navigateur.</p>
+    </div>
+    <div class="card">
+        <h3>Mes cartes</h3>
+        <div id="flashcard" class="flashcard">Aucune carte pour le moment.</div>
+        <button onclick="afficherCarte()">🔄 Afficher une autre carte</button>
+        <button class="danger" onclick="supprimerFiches()">🗑️ Supprimer les cartes</button>
+    </div>
+</div>
+</section>
+
+<section id="quiz" class="section">
+<h2>🧠 Quiz</h2>
+<div class="card">
+    <div id="quizBox"></div>
+    <button class="secondary" onclick="nouveauQuiz()">🔄 Nouveau quiz</button>
+</div>
+</section>
+
+</main>
+
+<footer>
+    StudyTools — HTML, CSS & JavaScript 💻
+</footer>
+
+<script>
+function allerA(id){
+    document.getElementById(id).scrollIntoView({behavior:"smooth"});
 }
 
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f4f6fb;
-    color: #1f2937;
-    transition: 0.3s;
+function modeSombre(){
+    document.body.classList.toggle("dark");
+    localStorage.setItem("studytools_dark", document.body.classList.contains("dark"));
+}
+if(localStorage.getItem("studytools_dark")==="true"){
+    document.body.classList.add("dark");
 }
 
-body.dark {
-    background: #111827;
-    color: white;
+/* MOYENNE */
+function ajouterNote(){
+    const ligne=document.createElement("div");
+    ligne.className="note-row";
+    ligne.innerHTML=`
+        <input type="number" min="0" max="20" step="0.01" placeholder="Note /20">
+        <input type="number" min="0.01" step="0.01" placeholder="Coefficient" value="1">
+        <button class="danger" onclick="supprimerNote(this)">✕</button>`;
+    document.getElementById("notes").appendChild(ligne);
+}
+function supprimerNote(btn){
+    const lignes=document.querySelectorAll(".note-row");
+    if(lignes.length>1) btn.parentElement.remove();
+}
+function calculerMoyenne(){
+    const lignes=document.querySelectorAll(".note-row");
+    let total=0, coefs=0;
+    lignes.forEach(ligne=>{
+        const note=Number(ligne.children[0].value);
+        const coef=Number(ligne.children[1].value);
+        if(note>=0 && note<=20 && coef>0){
+            total+=note*coef;
+            coefs+=coef;
+        }
+    });
+    const result=document.getElementById("moyenneResult");
+    if(!coefs){
+        result.textContent="Entre au moins une note valide.";
+        return;
+    }
+    result.textContent="Ta moyenne : "+(total/coefs).toFixed(2)+"/20";
+}
+function sauvegarderNotes(){
+    const donnees=[...document.querySelectorAll(".note-row")].map(ligne=>({
+        note:ligne.children[0].value,
+        coef:ligne.children[1].value
+    }));
+    localStorage.setItem("studytools_notes",JSON.stringify(donnees));
+    document.getElementById("moyenneResult").textContent="✅ Notes sauvegardées !";
+}
+function chargerNotes(){
+    const donnees=JSON.parse(localStorage.getItem("studytools_notes")||"null");
+    if(!donnees) return;
+    const box=document.getElementById("notes");
+    box.innerHTML="";
+    donnees.forEach(item=>{
+        const ligne=document.createElement("div");
+        ligne.className="note-row";
+        ligne.innerHTML=`
+            <input type="number" min="0" max="20" step="0.01" placeholder="Note /20" value="${item.note}">
+            <input type="number" min="0.01" step="0.01" placeholder="Coefficient" value="${item.coef}">
+            <button class="danger" onclick="supprimerNote(this)">✕</button>`;
+        box.appendChild(ligne);
+    });
 }
 
-/* HEADER */
-
-header {
-    background: #111827;
-    color: white;
-    padding: 30px 20px;
-    text-align: center;
+/* POINTS */
+function calculerPoints(){
+    const points=Number(document.getElementById("points800").value);
+    const result=document.getElementById("pointsResult");
+    if(isNaN(points)||points<0||points>800){
+        result.textContent="Entre un nombre entre 0 et 800.";
+        return;
+    }
+    result.textContent=points+"/800 = "+((points/800)*100).toFixed(2)+"%";
 }
 
+/* MINUTEUR */
+let secondes=0;
+let interval=null;
+function afficherTimer(){
+    const m=Math.floor(secondes/60);
+    const s=secondes%60;
+    document.getElementById("timer").textContent=
+        String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+}
+function demarrerMinuteur(){
+    if(interval!==null)return;
+    if(secondes===0){
+        const minutes=Number(document.getElementById("dureeTravail").value);
+        if(!minutes||minutes<1){
+            alert("Choisis d'abord une durée !");
+            return;
+        }
+        secondes=minutes*60;
+    }
+    document.getElementById("timerStatus").textContent="🔥 Session en cours";
+    interval=setInterval(()=>{
+        if(secondes>0){
+            secondes--;
+            afficherTimer();
+        }else{
+            clearInterval(interval);
+            interval=null;
+            document.getElementById("timerStatus").textContent="🎉 Session terminée !";
+            alert("🎉 Temps terminé !");
+        }
+    },1000);
+}
+function pauseMinuteur(){
+    clearInterval(interval);
+    interval=null;
+    if(secondes>0) document.getElementById("timerStatus").textContent="⏸️ En pause";
+}
+function resetMinuteur(){
+    clearInterval(interval);
+    interval=null;
+    secondes=0;
+    afficherTimer();
+    document.getElementById("timerStatus").textContent="Prêt à travailler";
+}
+
+/* PLANNING */
+let taches=JSON.parse(localStorage.getItem("studytools_taches")||"[]");
+function afficherPlanning(){
+    const box=document.getElementById("todoList");
+    box.innerHTML="";
+    if(!taches.length){
+        box.innerHTML='<p class="small">Aucune tâche pour le moment.</p>';
+        return;
+    }
+    taches.forEach((tache,index)=>{
+        const row=document.createElement("div");
+        row.className="todo-row"+(tache.faite?" done":"");
+        row.innerHTML=`
+            <input type="checkbox" ${tache.faite?"checked":""} onchange="terminerTache(${index})">
+            <span>${escapeHtml(tache.texte)}</span>
+            <button class="danger" style="width:auto;margin:0;padding:8px 11px" onclick="supprimerTache(${index})">✕</button>`;
+        box.appendChild(row);
+    });
+}
+function escapeHtml(str){
+    return str.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
+function ajouterTache(){
+    const input=document.getElementById("todoInput");
+    const texte=input.value.trim();
+    if(!texte)return;
+    taches.push({texte,faite:false});
+    input.value="";
+    sauvegarderPlanning();
+}
+function terminerTache(index){
+    taches[index].faite=!taches[index].faite;
+    sauvegarderPlanning();
+}
+function supprimerTache(index){
+    taches.splice(index,1);
+    sauvegarderPlanning();
+}
+function sauvegarderPlanning(){
+    localStorage.setItem("studytools_taches",JSON.stringify(taches));
+    afficherPlanning();
+}
+function effacerPlanning(){
+    if(confirm("Effacer toutes les tâches ?")){
+        taches=[];
+        sauvegarderPlanning();
+    }
+}
+
+/* FICHES */
+let fiches=JSON.parse(localStorage.getItem("studytools_fiches")||"[]");
+let carteActuelle=-1;
+function ajouterFiche(){
+    const q=document.getElementById("ficheQuestion").value.trim();
+    const r=document.getElementById("ficheReponse").value.trim();
+    if(!q||!r){
+        alert("Remplis la question et la réponse.");
+        return;
+    }
+    fiches.push({q,r});
+    localStorage.setItem("studytools_fiches",JSON.stringify(fiches));
+    document.getElementById("ficheQuestion").value="";
+    document.getElementById("ficheReponse").value="";
+    afficherCarte();
+}
+function afficherCarte(){
+    const box=document.getElementById("flashcard");
+    if(!fiches.length){
+        box.textContent="Aucune carte pour le moment.";
+        return;
+    }
+    carteActuelle=Math.floor(Math.random()*fiches.length);
+    box.textContent=fiches[carteActuelle].q;
+    box.dataset.mode="question";
+}
+document.getElementById("flashcard").addEventListener("click",function(){
+    if(carteActuelle<0||!fiches.length)return;
+    this.textContent=this.dataset.mode==="question"
+        ? fiches[carteActuelle].r
+        : fiches[carteActuelle].q;
+    this.dataset.mode=this.dataset.mode==="question"?"answer":"question";
+});
+function supprimerFiches(){
+    if(confirm("Supprimer toutes les cartes ?")){
+        fiches=[];
+        carteActuelle=-1;
+        localStorage.removeItem("studytools_fiches");
+        document.getElementById("flashcard").textContent="Aucune carte pour le moment.";
+    }
+}
+
+/* QUIZ */
+const questions=[
+    {q:"Combien font 25% de 200 ?",a:["25","50","75","100"],c:1},
+    {q:"Quelle planète est surnommée la planète rouge ?",a:["Vénus","Mars","Jupiter","Mercure"],c:1},
+    {q:"Quel est le résultat de 7 × 8 ?",a:["54","56","64","48"],c:1},
+    {q:"Dans quelle matière étudie-t-on principalement les équations ?",a:["Mathématiques","EPS","Arts plastiques","Musique"],c:0},
+    {q:"Quel gaz les humains utilisent-ils principalement pour respirer ?",a:["Oxygène","Hélium","Hydrogène","Néon"],c:0}
+];
+let quizIndex=0,score=0,quizTermine=false;
+function nouveauQuiz(){
+    quizIndex=0;score=0;quizTermine=false;
+    questions.sort(()=>Math.random()-.5);
+    afficherQuestion();
+}
+function afficherQuestion(){
+    const box=document.getElementById("quizBox");
+    if(quizIndex>=questions.length){
+        box.innerHTML=`<h3>🎉 Quiz terminé !</h3><p>Score : <strong>${score}/${questions.length}</strong></p>`;
+        quizTermine=true;
+        return;
+    }
+    const item=questions[quizIndex];
+    box.innerHTML=`
+        <p class="small">Question ${quizIndex+1}/${questions.length}</p>
+        <div class="quiz-question">${item.q}</div>
+        ${item.a.map((rep,i)=>`<button class="quiz-option" onclick="repondreQuiz(${i})">${rep}</button>`).join("")}`;
+}
+function repondreQuiz(index){
+    if(quizTermine)return;
+    const item=questions[quizIndex];
+    const boutons=document.querySelectorAll(".quiz-option");
+    boutons.forEach((btn,i)=>{
+        btn.disabled=true;
+        if(i===item.c)btn.classList.add("correct");
+        if(i===index&&index!==item.c)btn.classList.add("wrong");
+    });
+    if(index===item.c)score++;
+    setTimeout(()=>{
+        quizIndex++;
+        afficherQuestion();
+    },700);
+}
+
+chargerNotes();
+afficherPlanning();
+afficherTimer();
+nouveauQuiz();
+</script>
+
+</body>
+</html>
 header h1 {
     font-size: 36px;
     margin: 0;
